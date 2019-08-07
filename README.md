@@ -1,5 +1,7 @@
 ## 一个简单的刻度尺
 
+![刻度尺图片](https://raw.githubusercontent.com/328921371/MyImage/master/ruler.png)
+
 ### 项目有一个刻度尺的组件,上百度翻了许久,没有找到一个满意的,就自己动手撸了一个并上传到npm,有什么建议和不足的欢迎大家提出
 
 ## 导入
