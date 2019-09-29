@@ -6,7 +6,7 @@
 
 ## 导入
 
-> npm install cs-rule 
+> npm install cs-ruler
 
 ## 全局引入
 
