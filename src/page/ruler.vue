@@ -6,20 +6,21 @@
         <ul class="scrollrule-hook">
           <!--0刻度前的空白-->
           <div class="rule-null">
-            <li v-for="(item,index) in zeroList" class="scroll-item"></li>
+            <li v-for="(item,index) in zeroList" class="scroll-item" :key="index"></li>
           </div>
           <!--正常刻度表-->
           <template v-for="(item,index) in counter">
-            <li class="scroll-item">
+            <li class="scroll-item" :key="index">
               <template v-if="index % 10 == 0">
-                <div class="scroll-item-rule vux-1px-l scale-integer" :class=""></div>
-                <div class="scroll-item-num">{{ index + minNum }}</div>
+                <div class="scroll-item-rule vux-1px-l scale-integer"></div>
+                <div v-if="ispoint" class="scroll-item-num">{{ (index + minNum) / 10 }}</div>
+                <div v-else class="scroll-item-num">{{ index + minNum }}</div>
               </template>
               <template v-else-if="index % 5 == 0">
-                <div class="scroll-item-rule vux-1px-l scale-half" :class=""></div>
+                <div class="scroll-item-rule vux-1px-l scale-half"></div>
               </template>
               <template v-else>
-                <div class="scroll-item-rule vux-1px-l scale-one" :class=""></div>
+                <div class="scroll-item-rule vux-1px-l scale-one"></div>
               </template>
             </li>
           </template>
@@ -53,15 +54,32 @@
         type: Number,
         default: 0
       },
-      //0刻度前面的空白
-      zeroList: {
-        type: Number,
-        default: 20
+      // 指针颜色
+      pointerColor: {
+        type: String,
+        default: 'rgb(97,206,81)'
       },
+      // 刻度尺有多细
+      ruleWidth: {
+        type: Number,
+        default: 40
+      },
+      // 字体大小
+      numSize: {
+        type: Number,
+        default: 50
+      },
+      // 是否启用小数
+      ispoint: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
-        counter: this.maxNum - this.minNum
+        counter: this.maxNum - this.minNum,
+        //0刻度前面的空白
+        zeroList: this.ruleWidth / 2
       }
     },
     methods: {
@@ -77,8 +95,12 @@
         this.scrollrule.on('scroll', (pos) => {
           this.scrollX = Math.abs(Math.round(pos.x))
           let NumValue = Math.abs(Math.round(this.scrollX / this.oneWidth)) + this.minNum
-          this.$emit('post-NumValue', NumValue)
-
+          // 判断是否开启小数
+          if(this.ispoint){
+            this.$emit('post-NumValue', NumValue / 10)
+          }else{
+            this.$emit('post-NumValue', NumValue)
+          }
           //假如值快接近最大的,继续加,后面再考虑
         })
 
@@ -108,6 +130,16 @@
         // 每一格的距离大小
         this.oneWidth = listWidth / listNum
       },
+      // 获取指针颜色等信息
+      getMainValue(){
+        const docStyle = document.documentElement.getElementsByClassName('rule')[0].style;
+        // 指针颜色
+        docStyle.setProperty('--pointer-color', this.pointerColor);
+        // 字体大小
+        docStyle.setProperty('--num-size', this.numSize);
+        // 刻度尺宽度
+        docStyle.setProperty('--rule-width', this.ruleWidth);
+      }
     },
     computed: {
 
@@ -120,7 +152,7 @@
       });
     },
     mounted() {
-
+      this.getMainValue()
     },
     components: {
 
@@ -246,22 +278,28 @@
       .setRightLine();
     }
   }
+</style>
+
+<style>
   * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; 
   }
   .rule {
     position: relative;
     width: 100vw;
     height: calc(260 / 750 * 100vw);
     overflow: hidden;
+    --pointer-color: rgb(97,206,81);
+    --rule-width: 40;
+    --num-size: 50
   }
-
+  
   .scrollrule {
     height: calc(200 / 750 * 100vw);
   }
-
+  
   ul {
     list-style: none;
     overflow: hidden;
@@ -269,25 +307,24 @@
     white-space: nowrap;
     display: inline-block;
   }
-
+  
   .scroll-item {
     display: inline-block;
-    /*width: 18px;*/
-    width: calc(100vw / 40);
+    width: calc(100vw / var(--rule-width));
     text-align: center;
     vertical-align: top;
   }
-
+  
   /*刻度表数字*/
   .scroll-item-num {
     width: calc(100 / 750 * 100vw);
     margin-left: calc(-50 / 750 * 100vw);
     margin-top: calc(38 / 750 * 100vw);
     text-align: center;
-    font-size: calc(50 / 750 * 100vw);
+    font-size: calc(var(--num-size) / 750 * 100vw);
     color: #cccccc;
   }
-
+  
   /*中间红色指针*/
   .scroll-item-pointer {
     position: absolute;
@@ -295,38 +332,38 @@
     left: 50%;
     height: calc(70 / 750 * 100vw);
     transform: translate(-50%, 0);
-    border-right: 0.5vw solid #61ce51;
+    border-right: 0.5vw solid var(--pointer-color);
   }
-
+  
   .scroll-item-rule {
     display: inline-block;
     width: calc(100vw / 40);
     box-sizing: border-box;
   }
-
+  
   .vux-1px-l[data-v-db07d170]:before {
     border-color: #000000 !important;
   }
-
+  
   .vux-1px-l:before {
     border-color: #000000 !important;
   }
-
+  
   /*刻度1的*/
   .scale-one {
     height: calc(30 / 750 * 100vw);
   }
-
+  
   /*刻度0.5的*/
   .scale-half {
     height: calc(44 / 750 * 100vw);
   }
-
+  
   /*刻度10的*/
   .scale-integer {
     height: calc(60 / 750 * 100vw);
   }
-
+  
   /*0刻度前面的空白*/
   .rule-null {
     margin-right: calc(-8 / 750 * 100vw);

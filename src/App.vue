@@ -1,28 +1,26 @@
 <template>
   <div id="app">
-    <ruler @post-NumValue="rulerNum" :NowNum='NowNum' :maxNum='2000' :minNum='0'></ruler>
+    <!--刻度表-->
+    <ruler @post-NumValue="rulerNum" :NowNum='100' :maxNum='2000' :minNum='0' :ruleWidth='40' :numSize='50'></ruler>
   </div>
 </template>
 
 <script>
-import ruler from "./page/ruler";
-export default {
-    name: 'app',
-    props: {
-      NowNum: {
-        type: Number,
-        default: 100
-      }
-    },
+
+import ruler from './page/ruler.vue'
+  export default {
+    name: 'App',
     data() {
       return {
-        NumValue: ''
+        NumValue: '',
+        color: 'red'
       }
     },
     methods: {
       //子组件传递刻度表
       rulerNum(vul){
         this.NumValue = vul
+        // console.log(vul)
       },
     },
     computed: {
@@ -40,6 +38,6 @@ export default {
   }
 </script>
 
-<style>
-
+<style type="text/css">
+	
 </style>
