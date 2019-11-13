@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!--刻度表-->
-    <ruler @post-NumValue="rulerNum" :NowNum='100' :maxNum='2000' :minNum='0' :ruleWidth='40' :numSize='50'></ruler>
+    <ruler @post-NumValue="rulerNum" :NowNum='100' :maxNum='400' :minNum='340' :ruleWidth='40' :numSize='50' ispoint></ruler>
   </div>
 </template>
 
@@ -20,7 +20,6 @@ import ruler from './page/ruler.vue'
       //子组件传递刻度表
       rulerNum(vul){
         this.NumValue = vul
-        // console.log(vul)
       },
     },
     computed: {

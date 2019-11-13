@@ -24,6 +24,12 @@
               </template>
             </li>
           </template>
+          
+          <!-- 最大刻度后面的空白 -->
+          <div class="rule-null-after">
+            <li v-for="(item,index) in aletrList" class="scroll-item" :key="index"></li>
+          </div>
+          
         </ul>
       </div>
       <!--刻度表的针-->
@@ -77,9 +83,12 @@
     },
     data() {
       return {
-        counter: this.maxNum - this.minNum,
-        //0刻度前面的空白
-        zeroList: this.ruleWidth / 2
+        // 由于v-for循环的时候,按照index计数的,所以最后一个值不会显示,需要+1,则刻度尺后面的空白就要+1
+        counter: this.maxNum - this.minNum + 1,
+        //0刻度前面的空白,
+        zeroList: this.ruleWidth / 2,
+        // 刻度结束后的空白
+        aletrList: this.ruleWidth / 2 - 1,
       }
     },
     methods: {
@@ -126,7 +135,7 @@
         // 获取右侧菜单每一个的li
         let goodsList = this.$refs.scrollrule.getElementsByClassName('scrollrule-hook')[0]
         let listWidth = goodsList.clientWidth
-        let listNum = this.counter + this.zeroList
+        let listNum = this.counter + this.zeroList + this.aletrList
         // 每一格的距离大小
         this.oneWidth = listWidth / listNum
       },
@@ -139,6 +148,7 @@
         docStyle.setProperty('--num-size', this.numSize);
         // 刻度尺宽度
         docStyle.setProperty('--rule-width', this.ruleWidth);
+        
       }
     },
     computed: {
@@ -367,6 +377,10 @@
   /*0刻度前面的空白*/
   .rule-null {
     margin-right: calc(-8 / 750 * 100vw);
+    display: inline-block;
+  }
+  .rule-null-after {
+    margin-left: calc(-8 / 750 * 100vw);
     display: inline-block;
   }
 </style>
