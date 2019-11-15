@@ -49,7 +49,7 @@
 
 ## 可配置项
 
-`<ruler @post-NumValue="rulerNum" :NowNum='100' :maxNum='2000' :minNum='0'></ruler>`
+`<cs-ruler @post-NumValue="rulerNum" :NowNum='100' :maxNum='2000' :minNum='0'></cs-ruler>`
 
 > rulerNum 是一个函数,需要一个值去接收
 
@@ -75,11 +75,11 @@ methods: {
 
 >新增可配置指针颜色
 
-`<ruler :pointerColor="'red'"></ruler>`
+`<cs-ruler :pointerColor="'red'"></cs-ruler>`
 
 >新增配置字体大小
 
-`<ruler :numSize='40'></ruler>`
+`<cs-ruler :numSize='40'></cs-ruler>`
 
 字体颜色直接修改相应的class名即可,如果有需求想要配置可以提出
 
@@ -87,16 +87,49 @@ methods: {
 
 可配置一页显示多少格,默认一页为40个小格,最低30个小格,数字为10的倍数,格数太低没有适配,有需求可以提出来
 
-`<ruler :ruleWidth='40'></ruler>`
+`<cs-ruler :ruleWidth='40'></cs-ruler>`
 
 >新增配置小数
 
 可开启小数,整体除以10,默认不开启(最大值与最小值需要相应的变大10倍)
 
-`<ruler ispoint></ruler>`
+`<cs-ruler ispoint></cs-ruler>`
 
 ### 2.0.2版本修改
 
 修改最大值无法选中..已修复
+
+
+### 2.1.0版本修改
+
+1. 修复样式影响到其他页面问题
+2. 修复同时使用多个组件,配置无效问题
+3. 新增滚动结束后发送给父级消息事件,具体使用方法如下
+
+`<cs-ruler @scroll-end="endEvent"></cs-ruler>`
+
+在方法中监听scroll-end传递的值,值为true,则滚动完成
+
+```
+methods: {
+  //子组件结束传值true
+  endEvent(val){
+    console.log(val)
+  }
+},
+```
+
+4. 新增开始滚动后发送给父级消息事件,具体使用方法如下
+
+`<cs-ruler @scroll-start="startEvent"></cs-ruler>`
+
+在方法中监听scroll-start传递的值,值为true,则滚动完成
+
+```
+methods: {
+  startEvent(val){
+    console.log(val)
+  }
+},
 
 喜欢的话欢迎到github上star并且提出自己的需求

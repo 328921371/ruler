@@ -1,39 +1,39 @@
 <template>
   <div>
-    <div class="rule">
+    <div class="cs-rule" ref="rulepage">
       <!--刻度表-->
-      <div class="scrollrule" ref="scrollrule">
-        <ul class="scrollrule-hook">
+      <div class="cs-scrollrule" ref="scrollrule">
+        <ul class="cs-scrollrule-hook" ref="rulehook">
           <!--0刻度前的空白-->
-          <div class="rule-null">
-            <li v-for="(item,index) in zeroList" class="scroll-item" :key="index"></li>
+          <div class="cs-rule-null">
+            <li v-for="(item,index) in zeroList" class="cs-scroll-item" :key="index"></li>
           </div>
           <!--正常刻度表-->
           <template v-for="(item,index) in counter">
-            <li class="scroll-item" :key="index">
+            <li class="cs-scroll-item" :key="index">
               <template v-if="index % 10 == 0">
-                <div class="scroll-item-rule vux-1px-l scale-integer"></div>
-                <div v-if="ispoint" class="scroll-item-num">{{ (index + minNum) / 10 }}</div>
-                <div v-else class="scroll-item-num">{{ index + minNum }}</div>
+                <div class="cs-scroll-item-rule vux-1px-l cs-scale-integer"></div>
+                <div v-if="ispoint" class="cs-scroll-item-num">{{ (index + minNum) / 10 }}</div>
+                <div v-else class="cs-scroll-item-num">{{ index + minNum }}</div>
               </template>
               <template v-else-if="index % 5 == 0">
-                <div class="scroll-item-rule vux-1px-l scale-half"></div>
+                <div class="cs-scroll-item-rule vux-1px-l cs-scale-half"></div>
               </template>
               <template v-else>
-                <div class="scroll-item-rule vux-1px-l scale-one"></div>
+                <div class="cs-scroll-item-rule vux-1px-l cs-scale-one"></div>
               </template>
             </li>
           </template>
           
           <!-- 最大刻度后面的空白 -->
-          <div class="rule-null-after">
-            <li v-for="(item,index) in aletrList" class="scroll-item" :key="index"></li>
+          <div class="cs-rule-null-after">
+            <li v-for="(item,index) in aletrList" class="cs-scroll-item" :key="index"></li>
           </div>
           
         </ul>
       </div>
       <!--刻度表的针-->
-      <div class="scroll-item-pointer"></div>
+      <div class="cs-scroll-item-pointer"></div>
 
     </div>
   </div>
@@ -79,6 +79,11 @@
       ispoint: {
         type: Boolean,
         default: false
+      },
+      // 每个格子多大
+      oneGridValue: {
+        type: Number,
+        default: 1
       }
     },
     data() {
@@ -99,6 +104,11 @@
           probeType: 3,
           scrollX: true,
         })
+        
+        // 监听滚动开始
+        this.scrollrule.on('scrollStart', (pos) => {
+          this.$emit('scroll-start', true)
+        })
 
         // 监听滚动
         this.scrollrule.on('scroll', (pos) => {
@@ -106,11 +116,10 @@
           let NumValue = Math.abs(Math.round(this.scrollX / this.oneWidth)) + this.minNum
           // 判断是否开启小数
           if(this.ispoint){
-            this.$emit('post-NumValue', NumValue / 10)
+            this.$emit('post-NumValue', NumValue / 10 )
           }else{
-            this.$emit('post-NumValue', NumValue)
+            this.$emit('post-NumValue', NumValue )
           }
-          //假如值快接近最大的,继续加,后面再考虑
         })
 
         //滚动结束监听
@@ -127,13 +136,17 @@
               this.scrollrule.scrollBy(littleNum, 0, 0)
             }
           }
+          // 滚动结束给父级发送一个事件
+          // 初始化时调整了一次值,所以也会有一个true
+          // 第一次true是因为滚动结束,第二个true是因为位置微调了一次,所以又滚动了
+          this.$emit('scroll-end', true)
         })
 
       },
       // 获取宽度用于计算滚动区域
       calculateWidth() {
         // 获取右侧菜单每一个的li
-        let goodsList = this.$refs.scrollrule.getElementsByClassName('scrollrule-hook')[0]
+        let goodsList = this.$refs.rulehook
         let listWidth = goodsList.clientWidth
         let listNum = this.counter + this.zeroList + this.aletrList
         // 每一格的距离大小
@@ -141,7 +154,7 @@
       },
       // 获取指针颜色等信息
       getMainValue(){
-        const docStyle = document.documentElement.getElementsByClassName('rule')[0].style;
+        const docStyle = this.$refs.rulepage.style;
         // 指针颜色
         docStyle.setProperty('--pointer-color', this.pointerColor);
         // 字体大小
@@ -290,13 +303,13 @@
   }
 </style>
 
-<style>
+<style scoped>
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box; 
   }
-  .rule {
+  .cs-rule {
     position: relative;
     width: 100vw;
     height: calc(260 / 750 * 100vw);
@@ -306,11 +319,11 @@
     --num-size: 50
   }
   
-  .scrollrule {
+  .cs-scrollrule {
     height: calc(200 / 750 * 100vw);
   }
   
-  ul {
+  .cs-scrollrule-hook {
     list-style: none;
     overflow: hidden;
     border-collapse: collapse;
@@ -318,7 +331,7 @@
     display: inline-block;
   }
   
-  .scroll-item {
+  .cs-scroll-item {
     display: inline-block;
     width: calc(100vw / var(--rule-width));
     text-align: center;
@@ -326,7 +339,7 @@
   }
   
   /*刻度表数字*/
-  .scroll-item-num {
+  .cs-scroll-item-num {
     width: calc(100 / 750 * 100vw);
     margin-left: calc(-50 / 750 * 100vw);
     margin-top: calc(38 / 750 * 100vw);
@@ -336,7 +349,7 @@
   }
   
   /*中间红色指针*/
-  .scroll-item-pointer {
+  .cs-scroll-item-pointer {
     position: absolute;
     top: 0;
     left: 50%;
@@ -345,7 +358,7 @@
     border-right: 0.5vw solid var(--pointer-color);
   }
   
-  .scroll-item-rule {
+  .cs-scroll-item-rule {
     display: inline-block;
     width: calc(100vw / 40);
     box-sizing: border-box;
@@ -360,26 +373,26 @@
   }
   
   /*刻度1的*/
-  .scale-one {
+  .cs-scale-one {
     height: calc(30 / 750 * 100vw);
   }
   
   /*刻度0.5的*/
-  .scale-half {
+  .cs-scale-half {
     height: calc(44 / 750 * 100vw);
   }
   
   /*刻度10的*/
-  .scale-integer {
+  .cs-scale-integer {
     height: calc(60 / 750 * 100vw);
   }
   
   /*0刻度前面的空白*/
-  .rule-null {
+  .cs-rule-null {
     margin-right: calc(-8 / 750 * 100vw);
     display: inline-block;
   }
-  .rule-null-after {
+  .cs-rule-null-after {
     margin-left: calc(-8 / 750 * 100vw);
     display: inline-block;
   }
