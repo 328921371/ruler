@@ -1,7 +1,7 @@
 {
   "name": "cs-ruler",
   "description": "刻度尺组件",
-  "version": "2.1.1",
+  "version": "2.1.4",
   "author": "chensheng",
   "license": "MIT",
   "private": false,

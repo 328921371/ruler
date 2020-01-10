@@ -2,8 +2,7 @@
   <div id="app">
     <!--刻度表-->
     <!-- <ruler @post-NumValue="rulerNum" @scroll-end="endEvent" :NowNum='100' :maxNum='400' :minNum='340' :ruleWidth='40' pointerColor="yellow" :numSize='50' ispoint></ruler> -->
-    
-    <ruler @post-NumValue="rulerNum" @scroll-start='startEvent' @scroll-end="endEvent" :NowNum='100' :maxNum='200' :minNum='0' :ruleWidth='40' :numSize='50'></ruler>
+    <ruler @post-NumValue="rulerNum" @scroll-start='startEvent' @scroll-end="endEvent" :NowNum='100' :maxNum='200' :minNum='-30' :ruleWidth='40' :numSize='50'></ruler>
   </div>
 </template>
 
@@ -25,7 +24,7 @@ import ruler from './page/ruler.vue'
         // console.log(vul)
       },
       endEvent(val){
-        console.log(val)
+        // console.log(val)
       },
       startEvent(val){
         // console.log(val)

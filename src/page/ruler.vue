@@ -14,7 +14,7 @@
               <template v-if="index % 10 == 0">
                 <div class="cs-scroll-item-rule vux-1px-l cs-scale-integer"></div>
                 <div v-if="ispoint" class="cs-scroll-item-num">{{ (index + minNum) / 10 }}</div>
-                <div v-else class="cs-scroll-item-num">{{ index + minNum }}</div>
+                <div v-else class="cs-scroll-item-num">{{ (index + minNum ) * oneGridValue }}</div>
               </template>
               <template v-else-if="index % 5 == 0">
                 <div class="cs-scroll-item-rule vux-1px-l cs-scale-half"></div>
@@ -116,9 +116,9 @@
           let NumValue = Math.abs(Math.round(this.scrollX / this.oneWidth)) + this.minNum
           // 判断是否开启小数
           if(this.ispoint){
-            this.$emit('post-NumValue', NumValue / 10 )
+            this.$emit('post-NumValue', NumValue / 10 * this.oneGridValue )
           }else{
-            this.$emit('post-NumValue', NumValue )
+            this.$emit('post-NumValue', NumValue * this.oneGridValue )
           }
         })
 
@@ -171,7 +171,9 @@
       this.$nextTick(() => {
         this.initScroll();
         this.calculateWidth();
-        this.scrollrule.scrollBy(-(this.oneWidth * this.NowNum), 0, 0)
+        
+        // this.NowNum - this.minNum 当前值-最小值才是初始化需要滚动的值
+        this.scrollrule.scrollBy(-(this.oneWidth * (this.NowNum - this.minNum) ), 0, 0)
       });
     },
     mounted() {

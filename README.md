@@ -1,8 +1,10 @@
 ## 一个简单的刻度尺
 
-![刻度尺图片](https://raw.githubusercontent.com/328921371/MyImage/master/ruler.png)
+![刻度尺图片](http://q3vcvgneb.bkt.clouddn.com/npm-ruler.png)
 
 ### 项目有一个刻度尺的组件,上百度翻了许久,没有找到一个满意的,就自己动手撸了一个并上传到npm,有什么建议和不足的欢迎大家提出
+
+>大家可以百度或谷歌搜索 [陈先生的小前端](http://www.chensheng.group/) ,来一起学习交流
 
 ## 导入
 
@@ -131,5 +133,16 @@ methods: {
     console.log(val)
   }
 },
+```
+
+### 2.1.2版本修改
+
+新增倍数字段oneGridValue,将整体的数值扩大,默认为1(最大值与最小值也会相应的扩大)
+
+`<cs-ruler :oneGridValue='1'></cs-ruler>`
+
+### 2.1.3版本修改
+
+修复bug最小值设置的原因,导致初始值计算出错
 
 喜欢的话欢迎到github上star并且提出自己的需求
